@@ -1,0 +1,9 @@
+__tests__
+.github
+node_modules
+.editorconfig
+.eslint*
+.prettierrc
+jest.config.jest
+tsconfig.json
+tsconfig.release.json

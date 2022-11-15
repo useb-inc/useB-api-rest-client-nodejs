@@ -1,6 +1,6 @@
 import HTTPMethod from '../constants';
 import { UsebAPI } from '../UsebAPI';
-import _ from 'lodash';
+import * as _ from 'lodash';
 import axios, {
   AxiosRequestConfig,
   AxiosRequestHeaders,
@@ -14,7 +14,7 @@ import {
   UsebAPITokenResponse,
 } from '../interfaces';
 
-type PromiseResponse<D = any> =
+type PromiseResponse<D = unknown> =
   | UsebAPIResponse<D>
   | UsebAPITokenResponse
   | AxiosError<UsebAPIResponse>;
@@ -43,7 +43,7 @@ export class Base {
    * });
    * usebAPI.openapi.overrideHost('https://openapi-test.useb.co.kr');
    */
-  public overrideHost(host: string) {
+  public overrideHost(host: string): Base {
     this._host = host;
     return this;
   }
@@ -60,18 +60,24 @@ export class Base {
     return headers;
   }
 
-  private async _makeRequest<D = any>(
+  private async _makeRequest<R>(
     method: HTTPMethod,
     url: string,
-    params: any,
+    params: object,
     extraHeaders: AxiosRequestHeaders,
-  ): Promise<PromiseResponse<D>> {
+  ): Promise<PromiseResponse<R>> {
     const axiosConfig: AxiosRequestConfig = {
       url,
       method,
-      data: params,
     };
-    if (/\/oauth\/token/.test(url)) {
+
+    if (method === HTTPMethod.GET) {
+      axiosConfig.params = params;
+    } else {
+      axiosConfig.data = params;
+    }
+
+    if (/\/oauth\//.test(url)) {
       axiosConfig.headers = extraHeaders;
     } else {
       axiosConfig.headers = {
@@ -87,7 +93,7 @@ export class Base {
         return Promise.resolve(data);
       })
       .catch((err: AxiosError<UsebAPIResponse>) => {
-        return Promise.reject(err);
+        return Promise.reject(err.response);
       });
   }
 
@@ -97,19 +103,21 @@ export class Base {
    * @param {string[]} params
    * @returns {string}
    */
-  private _makeUrl(path: string[]) {
+  private _makeUrl(path: string[]): string {
     // regex replace leading and trailing slash
     return path.map((s) => s.replace(/(^\/|\/$)/g, '')).join('/');
   }
 
-  protected callAPIMethod<D = any>(spec: MethodSpec) {
+  protected callAPIMethod<P extends object, R = Record<string, unknown>>(
+    spec: MethodSpec,
+  ): (options?: CallAPIMethodOptions<P>) => Promise<PromiseResponse<R>> {
     const { path, method, urlParam, requiredParams } = spec;
     const _this = this;
 
-    return function (options: CallAPIMethodOptions = {}) {
-      let { param, headers } = options;
+    return function (options?: CallAPIMethodOptions<P>) {
+      const { param, headers } = options || {};
       const stack = new Error().stack;
-      const apiParams: string[] = [_this._host, path];
+      const apiParams: string[] = [_this._host];
 
       // urlParam이 정의되어있으나 param에 없으면 에러
       if (urlParam) {
@@ -118,11 +126,20 @@ export class Base {
             reject(new Error('Param missing: ' + urlParam));
           });
         }
-        apiParams.push(param[urlParam]);
-        param = _.omit(param, urlParam);
+        _.entries(param).forEach(([key, value]) => {
+          if (key === urlParam) {
+            const replacedPath = path.replace(`:${key}`, value);
+            apiParams.push(replacedPath);
+          }
+        });
+        delete param[urlParam];
+      } else {
+        apiParams.push(path);
       }
 
       for (let i = 0; i < requiredParams?.length || 0; i++) {
+        console.log(param);
+        console.log(requiredParams[i]);
         if (!_.has(param, requiredParams[i])) {
           return new Promise(function (resolve, reject) {
             reject(new Error('Param missing: ' + requiredParams[i]));
@@ -130,16 +147,11 @@ export class Base {
         }
       }
 
-      let API_BASE = _this._makeUrl(apiParams);
-      // if method is GET and param is not empty, add query string
-      if (method === HTTPMethod.GET && !_.isEmpty(param)) {
-        API_BASE += '?' + new URLSearchParams(param).toString();
-        param = _.omit(_.keys(param)); // clear param object
-      }
+      const API_BASE = _this._makeUrl(apiParams);
 
-      return new Promise<PromiseResponse<D>>(function (resolve, reject) {
+      return new Promise<PromiseResponse<R>>(function (resolve, reject) {
         _this
-          ._makeRequest(method, API_BASE, param, headers)
+          ._makeRequest<R>(method, API_BASE, param, headers)
           .then((data) => resolve(data))
           .catch((error) => {
             if (error.stack && stack) {

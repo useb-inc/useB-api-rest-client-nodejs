@@ -1,10 +1,9 @@
 {
-  "name": "node-typescript-boilerplate",
-  "version": "0.0.0",
-  "description": "Minimalistic boilerplate to quick-start Node.js development in TypeScript.",
-  "engines": {
-    "node": ">= 16.13 <17"
-  },
+  "name": "useb-api-sdk-nodejs",
+  "version": "0.1.0",
+  "description": "NodeJS용 USEB API SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "devDependencies": {
     "@types/jest": "~29.1",
     "@types/lodash": "^4.14.188",
@@ -34,8 +33,12 @@
     "prettier": "prettier --config .prettierrc --write .",
     "test:watch": "jest --watch"
   },
-  "author": "Jakub Synowiec <jsynowiec@users.noreply.github.com>",
-  "license": "Apache-2.0",
+  "author": {
+    "name": "Won Jun Choi",
+    "email": "jack@useb.co.kr",
+    "url": "https://github.com/jack-useb"
+  },
+  "license": "MIT",
   "dependencies": {
     "axios": "^0.27.2",
     "lodash": "^4.17.21",

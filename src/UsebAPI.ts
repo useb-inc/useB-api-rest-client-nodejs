@@ -1,6 +1,5 @@
+import { UsebAPITokenResponse } from './interfaces';
 import { Auth, OpenAPI, Status } from './resources';
-import { UsebAPIResponse, UsebAPITokenResponse } from './interfaces';
-import axios from 'axios';
 
 interface AuthProperties {
   clientId: string;
@@ -41,7 +40,7 @@ export class UsebAPI {
     this._initResources();
   }
 
-  private _initResources() {
+  private _initResources(): void {
     for (const name in resources) {
       this[name.toLowerCase()] = new resources[name](this);
     }
@@ -56,7 +55,7 @@ export class UsebAPI {
     this._token = token;
   }
 
-  public getToken(options: GetTokenOptions = {}) {
+  public getToken(options: GetTokenOptions = {}): Promise<Token> {
     const { forceRefresh } = options;
     const _this = this;
 
@@ -81,23 +80,9 @@ export class UsebAPI {
           _this.token = token;
           return resolve(token);
         })
-        .catch();
+        .catch((err) => reject(err));
     });
   }
 }
 
-const usebAPI = new UsebAPI({
-  clientId: '383a261ed6410f37f605a5c06e8b66e7',
-  clientSecret: 'ad30efde654f3e926bd00760069056b5',
-});
-
-// console.log(usebAPI.auth);
-
-usebAPI
-  .getToken()
-  .then((token) => {
-    console.log(JSON.stringify(token));
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+export default UsebAPI;

@@ -1,113 +1,82 @@
-# node-typescript-boilerplate
+# useb-api-sdk-nodejs
 
-[![Sponsor][sponsor-badge]][sponsor]
-[![TypeScript version][ts-badge]][typescript-4-8]
-[![Node.js version][nodejs-badge]][nodejs]
-[![APLv2][license-badge]][license]
-[![Build Status - GitHub Actions][gha-badge]][gha-ci]
+useB API 는 고객의 신원인증을 API 호출을 통해 간단하게 조회 할 수 있도록 제공하는 서비스입니다.
 
-👩🏻‍💻 Developer Ready: A comprehensive template. Works out of the box for most [Node.js][nodejs] projects.
+- 이 모듈은 useB에서 제공하는 REST API를 [Node.js®](https://nodejs.org/)로 구현한 SDK 입니다.
+- Nodejs 환경에서 별도의 API 호출 클라이언트를 구현하지 않고 간편하게 useB API를 호출할 수 있습니다.
+- 관련 API 문서는 [useB API 문서](https://docs.useb.co.kr/)를 참고하세요.
 
-🏃🏽 Instant Value: All basic tools included and configured:
+## Features
 
-- [TypeScript][typescript] [4.8][typescript-4-8]
-- [ESM][esm]
-- [ESLint][eslint] with some initial rules recommendation
-- [Jest][jest] for fast unit testing and code coverage
-- Type definitions for Node.js and Jest
-- [Prettier][prettier] to enforce consistent code style
-- NPM [scripts](#available-scripts) for common operations
-- [EditorConfig][editorconfig] for consistent coding style
-- Reproducible environments thanks to [Volta][volta]
-- Example configuration for [GitHub Actions][gh-actions]
-- Simple example of TypeScript code and unit test
+- API 생성자를 제외한 모든 함수는 [Promise](http://www.html5rocks.com/ko/tutorials/es6/promises/)를 반환합니다
+- Typescript 로 구현되어있어 [TypeScript](https://www.typescriptlang.org/) 환경에서도 사용할 수 있습니다.
 
-🤲 Free as in speech: available under the APLv2 license.
+## Requirements
 
-## Getting Started
+- [nodejs](https://github.com/nodejs/node) >= 0.12.x
 
-This project is intended to be used with the latest Active LTS release of [Node.js][nodejs].
+## 설치하기
 
-### Use as a repository template
+아래 명령어를 통해 `useb-api-sdk-nodejs`를 nodeJS 프로젝트에 추가합니다.
 
-To start, just click the **[Use template][repo-template-action]** link (or the green button). Start adding your code in the `src` and unit tests in the `__tests__` directories.
-
-### Clone repository
-
-To clone the repository, use the following commands:
-
-```sh
-git clone https://github.com/jsynowiec/node-typescript-boilerplate
-cd node-typescript-boilerplate
-npm install
+```
+$ npm install useb-api-sdk-nodejs
 ```
 
-### Download latest release
+## API 호출하기
 
-Download and unzip the current **main** branch or one of the tags:
+아래는 `useb-api-sdk-nodejs`를 활용해 주민등록번호 진위여부 조회 API를 호출하는 예제 코드입니다.
 
-```sh
-wget https://github.com/jsynowiec/node-typescript-boilerplate/archive/main.zip -O node-typescript-boilerplate.zip
-unzip node-typescript-boilerplate.zip && rm node-typescript-boilerplate.zip
+```javascript
+// 1. useB REST API 호출에 필요한 모듈을 불러옵니다.
+import { UsebAPI } from 'useb-api-sdk-nodejs';
+
+// 2. UsebAPI 객체를 생성합니다. 귀하의 API 정보는 dashboard.useb.co.kr 프로필(또는 내정보) > API KEYS를 참고해주세요.
+const usebAPI = new UsebAPI({
+  clientId: 'YOUR_ClIENT_ID',
+  clientSecret: 'YOUR_CLIENT_SECRET',
+});
+
+// 3. 주민등록번호 진위여부 조회 API를 호출합니다.
+// 3-1. Promise chaining 사용시
+usebAPI.status
+  .idcard({
+    param: {
+      identity: '주민등록번호',
+      issueDate: '주민등록번호 발급일',
+      userName: '이름',
+    },
+  })
+  .then((data) => {
+    console.log(data);
+    // {"success":true,"message":"입력하신 내용은 등록된 내용과 일치합니다.","transaction_id":"605c77eeec82e373fdc11dee"}
+  })
+  .catch((err) => {
+    console.log(err.data);
+    // {"success":false,"message":"ID number is invalid","error_code":"A001","transaction_id":"5ff48526ec829f1fdfcb6a9b"}
+  });
+
+// 3-2. async/await 사용시
+try {
+  const result = await usebAPI.status.idcard({
+    param: {
+      identity: '주민등록번호',
+      issueDate: '주민등록번호 발급일',
+      userName: '이름',
+    },
+  });
+  console.log(result);
+  // {"success":true,"message":"입력하신 내용은 등록된 내용과 일치합니다.","transaction_id":"605c77eeec82e373fdc11dee"}
+} catch (e) {
+  console.log(e.data);
+  // {"success":false,"message":"ID number is invalid","error_code":"A001","transaction_id":"5ff48526ec829f1fdfcb6a9b"}
+}
 ```
-
-## Available Scripts
-
-- `clean` - remove coverage data, Jest cache and transpiled files,
-- `prebuild` - lint source files and tests before building,
-- `build` - transpile TypeScript to ES6,
-- `build:watch` - interactive watch mode to automatically transpile source files,
-- `lint` - lint source files and tests,
-- `prettier` - reformat files,
-- `test` - run tests,
-- `test:watch` - interactive watch mode to automatically re-run tests
-
-## Additional Information
-
-### Why include Volta
-
-[Volta][volta]’s toolchain always keeps track of where you are, it makes sure the tools you use always respect the settings of the project you’re working on. This means you don’t have to worry about changing the state of your installed software when switching between projects. For example, it's [used by engineers at LinkedIn][volta-tomdale] to standardize tools and have reproducible development environments.
-
-I recommend to [install][volta-getting-started] Volta and use it to manage your project's toolchain.
-
-### ES Modules
-
-This template uses native [ESM][esm]. Make sure to read [this][nodejs-esm], and [this][ts47-esm] first.
-
-If your project requires CommonJS, you will have to [convert to ESM][sindresorhus-esm].
-
-Please do not open issues for questions regarding CommonJS or ESM on this repo.
-
-## Backers & Sponsors
-
-Support this project by becoming a [sponsor][sponsor].
 
 ## License
 
-Licensed under the APLv2. See the [LICENSE](https://github.com/jsynowiec/node-typescript-boilerplate/blob/main/LICENSE) file for details.
+[MIT](LICENSE)
 
-[ts-badge]: https://img.shields.io/badge/TypeScript-4.8-blue.svg
-[nodejs-badge]: https://img.shields.io/badge/Node.js->=%2016.13-blue.svg
-[nodejs]: https://nodejs.org/dist/latest-v14.x/docs/api/
-[gha-badge]: https://github.com/jsynowiec/node-typescript-boilerplate/actions/workflows/nodejs.yml/badge.svg
-[gha-ci]: https://github.com/jsynowiec/node-typescript-boilerplate/actions/workflows/nodejs.yml
-[typescript]: https://www.typescriptlang.org/
-[typescript-4-8]: https://devblogs.microsoft.com/typescript/announcing-typescript-4-8/
-[license-badge]: https://img.shields.io/badge/license-APLv2-blue.svg
-[license]: https://github.com/jsynowiec/node-typescript-boilerplate/blob/main/LICENSE
-[sponsor-badge]: https://img.shields.io/badge/♥-Sponsor-fc0fb5.svg
-[sponsor]: https://github.com/sponsors/jsynowiec
-[jest]: https://facebook.github.io/jest/
-[eslint]: https://github.com/eslint/eslint
-[wiki-js-tests]: https://github.com/jsynowiec/node-typescript-boilerplate/wiki/Unit-tests-in-plain-JavaScript
-[prettier]: https://prettier.io
-[volta]: https://volta.sh
-[volta-getting-started]: https://docs.volta.sh/guide/getting-started
-[volta-tomdale]: https://twitter.com/tomdale/status/1162017336699838467?s=20
-[gh-actions]: https://github.com/features/actions
-[repo-template-action]: https://github.com/jsynowiec/node-typescript-boilerplate/generate
-[esm]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules
-[sindresorhus-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-[nodejs-esm]: https://nodejs.org/docs/latest-v16.x/api/esm.html
-[ts47-esm]: https://devblogs.microsoft.com/typescript/announcing-typescript-4-8/#esm-nodejs
-[editorconfig]: https://editorconfig.org
+## Author
+
+[useB](https://useb.co.kr)

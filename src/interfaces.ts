@@ -7,12 +7,12 @@ export interface MethodSpec {
   urlParam?: string | null;
   requiredParams?: string[] | null;
 }
-export interface CallAPIMethodOptions {
-  param?: any;
+export interface CallAPIMethodOptions<P> {
+  param?: P;
   headers?: AxiosRequestHeaders;
 }
 
-export interface UsebAPIResponse<T = any> {
+export interface UsebAPIResponse<T = Record<string, unknown>> {
   success: boolean;
   message: string;
   transaction_id: string;

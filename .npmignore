@@ -4,6 +4,7 @@ node_modules
 .editorconfig
 .eslint*
 .prettierrc
-jest.config.jest
+jest.config.js
+coverage
 tsconfig.json
 tsconfig.release.json

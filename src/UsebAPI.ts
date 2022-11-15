@@ -1,4 +1,6 @@
-import { OpenAPI, Status } from './resources';
+import { Auth, OpenAPI, Status } from './resources';
+import { UsebAPIResponse, UsebAPITokenResponse } from './interfaces';
+import axios from 'axios';
 
 interface AuthProperties {
   clientId: string;
@@ -10,10 +12,16 @@ interface Token {
   expires_in: number;
 }
 
+interface GetTokenOptions {
+  forceRefresh?: boolean;
+}
+
 const resources = {
   OpenAPI,
   Status,
+  Auth,
 } as const;
+
 export class UsebAPI {
   private _clientId: string;
   private _clientSecret: string;
@@ -21,6 +29,7 @@ export class UsebAPI {
 
   public openapi: OpenAPI;
   public status: Status;
+  public auth: Auth;
 
   constructor(authProperties: AuthProperties) {
     const { clientId, clientSecret } = authProperties;
@@ -46,12 +55,49 @@ export class UsebAPI {
   set token(token: Token | null) {
     this._token = token;
   }
+
+  public getToken(options: GetTokenOptions = {}) {
+    const { forceRefresh } = options;
+    const _this = this;
+
+    return new Promise<Token>(function (resolve, reject) {
+      // 토큰이 만료됬거나 강제 재발급이 아니면 저장된 토큰을 반환
+      if (_this.token && !forceRefresh) return resolve(_this.token);
+
+      // 토큰이 만료됬거나 강제 재발급이면 새로운 토큰을 발급받음
+      const b64 = Buffer.from(
+        _this._clientId + ':' + _this._clientSecret,
+      ).toString('base64');
+
+      _this.auth
+        .token({
+          headers: { Authorization: `Basic ${b64}` },
+        })
+        .then((data: UsebAPITokenResponse) => {
+          const token: Token = {
+            jwt: data.jwt,
+            expires_in: new Date(data.expires_in).getTime(),
+          };
+          _this.token = token;
+          return resolve(token);
+        })
+        .catch();
+    });
+  }
 }
 
 const usebAPI = new UsebAPI({
-  clientId: '123',
-  clientSecret: '123',
+  clientId: '383a261ed6410f37f605a5c06e8b66e7',
+  clientSecret: 'ad30efde654f3e926bd00760069056b5',
 });
 
-usebAPI.openapi.realname({});
-// console.log(usebAPI.openapi.host);
+// console.log(usebAPI.auth);
+
+usebAPI
+  .getToken()
+  .then((token) => {
+    console.log(JSON.stringify(token));
+  })
+  .catch((err) => {
+    console.log(err);
+  });

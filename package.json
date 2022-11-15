@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@types/jest": "~29.1",
+    "@types/lodash": "^4.14.188",
     "@types/node": "~16",
     "@typescript-eslint/eslint-plugin": "~5.39",
     "@typescript-eslint/parser": "~5.39",
@@ -36,6 +37,8 @@
   "author": "Jakub Synowiec <jsynowiec@users.noreply.github.com>",
   "license": "Apache-2.0",
   "dependencies": {
+    "axios": "^0.27.2",
+    "lodash": "^4.17.21",
     "tslib": "~2.4"
   },
   "volta": {

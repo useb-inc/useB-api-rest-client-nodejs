@@ -1,23 +1,13 @@
-import HTTPMethod from '../constants';
-import { UsebAPI } from '../UsebAPI';
-import * as _ from 'lodash';
 import axios, {
+  AxiosError,
   AxiosRequestConfig,
   AxiosRequestHeaders,
   AxiosResponse,
-  AxiosError,
 } from 'axios';
-import {
-  CallAPIMethodOptions,
-  MethodSpec,
-  UsebAPIResponse,
-  UsebAPITokenResponse,
-} from '../interfaces';
-
-type PromiseResponse<D = unknown> =
-  | UsebAPIResponse<D>
-  | UsebAPITokenResponse
-  | AxiosError<UsebAPIResponse>;
+import * as _ from 'lodash';
+import HTTPMethod from '../constants';
+import { CallAPIMethodOptions, MethodSpec } from '../interfaces';
+import { UsebAPI } from '../UsebAPI';
 
 export class Base {
   protected _host: string;
@@ -65,7 +55,7 @@ export class Base {
     url: string,
     params: object,
     extraHeaders: AxiosRequestHeaders,
-  ): Promise<PromiseResponse<R>> {
+  ): Promise<R> {
     const axiosConfig: AxiosRequestConfig = {
       url,
       method,
@@ -88,11 +78,11 @@ export class Base {
 
     return this._axiosInstance
       .request(axiosConfig)
-      .then((response: AxiosResponse<UsebAPIResponse>) => {
+      .then((response: AxiosResponse<R>) => {
         const { data } = response;
         return Promise.resolve(data);
       })
-      .catch((err: AxiosError<UsebAPIResponse>) => {
+      .catch((err: AxiosError<R>) => {
         return Promise.reject(err.response);
       });
   }
@@ -110,7 +100,7 @@ export class Base {
 
   protected callAPIMethod<P extends object, R = Record<string, unknown>>(
     spec: MethodSpec,
-  ): (options?: CallAPIMethodOptions<P>) => Promise<PromiseResponse<R>> {
+  ): (options?: CallAPIMethodOptions<P>) => Promise<R> {
     const { path, method, urlParam, requiredParams } = spec;
     const _this = this;
 
@@ -138,10 +128,8 @@ export class Base {
       }
 
       for (let i = 0; i < requiredParams?.length || 0; i++) {
-        console.log(param);
-        console.log(requiredParams[i]);
         if (!_.has(param, requiredParams[i])) {
-          return new Promise(function (resolve, reject) {
+          return new Promise((resolve, reject) => {
             reject(new Error('Param missing: ' + requiredParams[i]));
           });
         }
@@ -149,7 +137,7 @@ export class Base {
 
       const API_BASE = _this._makeUrl(apiParams);
 
-      return new Promise<PromiseResponse<R>>(function (resolve, reject) {
+      return new Promise<R>((resolve, reject) => {
         _this
           ._makeRequest<R>(method, API_BASE, param, headers)
           .then((data) => resolve(data))

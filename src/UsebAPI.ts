@@ -1,5 +1,4 @@
-import { UsebAPITokenResponse } from './interfaces';
-import { Auth, OpenAPI, Status } from './resources';
+import { Auth, Openbank, Status } from './resources';
 
 interface AuthProperties {
   clientId: string;
@@ -16,7 +15,7 @@ interface GetTokenOptions {
 }
 
 const resources = {
-  OpenAPI,
+  Openbank,
   Status,
   Auth,
 } as const;
@@ -26,7 +25,7 @@ export class UsebAPI {
   private _clientSecret: string;
   private _token: Token | null = null;
 
-  public openapi: OpenAPI;
+  public openbank: Openbank;
   public status: Status;
   public auth: Auth;
 
@@ -72,7 +71,7 @@ export class UsebAPI {
         .token({
           headers: { Authorization: `Basic ${b64}` },
         })
-        .then((data: UsebAPITokenResponse) => {
+        .then((data) => {
           const token: Token = {
             jwt: data.jwt,
             expires_in: new Date(data.expires_in).getTime(),

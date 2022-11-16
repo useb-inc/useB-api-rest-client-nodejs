@@ -73,6 +73,23 @@ try {
 }
 ```
 
+## Typescript type hint
+
+Typescript 환경에서는 아래와 같이 error 객체에 대해 type hint를 사용할 수 있습니다.
+
+```typescript
+import { UsebAPI, UsebApiErrorResponse } from 'useb-api-sdk-nodejs';
+
+try {
+  //...중략...
+} catch (e: UsebApiErrorResponse) {
+  console.log(e.data);
+  // {"success":false,"message":"ID number is invalid","error_code":"A001","transaction_id":"5ff48526ec829f1fdfcb6a9b"}
+}
+```
+
+`UsebApiErrorResponse` type은 `AxiosResponse` type을 상속받고 있습니다. 따라서 `AxiosResponse`의 모든 속성을 사용할 수 있습니다.
+
 ## License
 
 [MIT](LICENSE)

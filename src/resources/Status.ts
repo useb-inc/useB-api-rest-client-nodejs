@@ -1,4 +1,5 @@
 import HTTPMethod from '../constants';
+import { BaseResponse, DataResponse } from '../interfaces';
 import Base from './_Base';
 
 interface IdcardRequestParam {
@@ -36,6 +37,12 @@ interface AlienRequestParam {
 interface BusinessRegistrationRequestParam {
   biz_no: string;
 }
+interface BusinessRegistrationResponseData {
+  tax_type_code: string;
+  tax_type_name: string;
+  closing_date?: string;
+  tax_type_change_date?: string;
+}
 export class Status extends Base {
   protected _host = 'https://api3.useb.co.kr';
 
@@ -46,7 +53,7 @@ export class Status extends Base {
    * @param {string} userName 이름
    * @param {boolean=} [secret_mode] 암호화 적용 여부 (optional)
    */
-  idcard = this.callAPIMethod<IdcardRequestParam>({
+  idcard = this.callAPIMethod<IdcardRequestParam, BaseResponse>({
     method: HTTPMethod.POST,
     path: '/status/idcard',
     requiredParams: ['identity', 'issueDate', 'userName'],
@@ -60,7 +67,7 @@ export class Status extends Base {
    * @param {string=} [juminNo] 주민등록번호 (optional)
    * @param {boolean=} [secret_mode] 암호화 적용 여부 (optional)
    */
-  driver = this.callAPIMethod<DriverRequestParam>({
+  driver = this.callAPIMethod<DriverRequestParam, BaseResponse>({
     method: HTTPMethod.POST,
     path: '/status/driver',
     requiredParams: ['userName', 'birthDate', 'licenseNo'],
@@ -75,7 +82,7 @@ export class Status extends Base {
    * @param {string} birthDate 생년월일
    * @param {boolean=} [secret_mode] 암호화 적용 여부 (optional)
    */
-  passport = this.callAPIMethod<PassportRequestParam>({
+  passport = this.callAPIMethod<PassportRequestParam, BaseResponse>({
     method: HTTPMethod.POST,
     path: '/status/passport',
     requiredParams: [
@@ -94,7 +101,10 @@ export class Status extends Base {
    * @param {string} birthDate 생년월일
    * @param {boolean=} [secret_mode] 암호화 적용 여부 (optional)
    */
-  passportOverseas = this.callAPIMethod<PassportOverseasRequestParam>({
+  passportOverseas = this.callAPIMethod<
+    PassportOverseasRequestParam,
+    BaseResponse
+  >({
     method: HTTPMethod.POST,
     path: '/status/passport-overseas',
     requiredParams: ['passportNo', 'nationality', 'birthDate'],
@@ -106,7 +116,7 @@ export class Status extends Base {
    * @param {string} issueDate 발급일자
    * @param {boolean=} [secret_mode] 암호화 적용 여부 (optional)
    */
-  alien = this.callAPIMethod<AlienRequestParam>({
+  alien = this.callAPIMethod<AlienRequestParam, BaseResponse>({
     method: HTTPMethod.POST,
     path: '/status/alien',
     requiredParams: ['issueNo', 'issueDate'],
@@ -116,7 +126,10 @@ export class Status extends Base {
    * 사업자등록증 및 휴폐업조회
    * @param {string} biz_no 사업자등록번호
    */
-  businessRegistration = this.callAPIMethod<BusinessRegistrationRequestParam>({
+  businessRegistration = this.callAPIMethod<
+    BusinessRegistrationRequestParam,
+    DataResponse<BusinessRegistrationResponseData>
+  >({
     method: HTTPMethod.POST,
     path: '/status-doc/business-registration',
     requiredParams: ['biz_no'],

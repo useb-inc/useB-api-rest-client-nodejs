@@ -1,5 +1,5 @@
+import { AxiosRequestHeaders, AxiosResponse } from 'axios';
 import HTTPMethod from './constants';
-import { AxiosRequestHeaders } from 'axios';
 
 export interface MethodSpec {
   method?: HTTPMethod;
@@ -12,15 +12,21 @@ export interface CallAPIMethodOptions<P> {
   headers?: AxiosRequestHeaders;
 }
 
-export interface UsebAPIResponse<T = Record<string, unknown>> {
+export interface BaseResponse {
   success: boolean;
   message: string;
   transaction_id: string;
+}
+
+export interface ErrorResponse extends BaseResponse {
   error_code?: string;
+}
+
+export interface DataResponse<T = Record<string, unknown>>
+  extends BaseResponse {
   data?: T;
 }
 
-export interface UsebAPITokenResponse extends UsebAPIResponse {
-  jwt: string;
-  expires_in: string;
-}
+export type None = Record<string, unknown>;
+
+export type UsebApiErrorResponse = AxiosResponse<ErrorResponse>;

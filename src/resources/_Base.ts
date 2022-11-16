@@ -6,7 +6,7 @@ import axios, {
 } from 'axios';
 import * as _ from 'lodash';
 import HTTPMethod from '../constants';
-import { CallAPIMethodOptions, MethodSpec } from '../interfaces';
+import { CallAPIMethodOptions, ErrorResponse, MethodSpec } from '../interfaces';
 import { UsebAPI } from '../UsebAPI';
 
 export class Base {
@@ -82,7 +82,7 @@ export class Base {
         const { data } = response;
         return Promise.resolve(data);
       })
-      .catch((err: AxiosError<R>) => {
+      .catch((err: AxiosError<ErrorResponse>) => {
         return Promise.reject(err.response);
       });
   }

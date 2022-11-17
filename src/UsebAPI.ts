@@ -1,4 +1,4 @@
-import { Auth, Openbank, Status } from './resources';
+import { Auth, Openbank, Status, Firmbank, FirmbankPremium } from './resources';
 
 interface AuthProperties {
   clientId: string;
@@ -18,6 +18,8 @@ const resources = {
   Openbank,
   Status,
   Auth,
+  Firmbank,
+  FirmbankPremium,
 } as const;
 
 export class UsebAPI {
@@ -28,6 +30,8 @@ export class UsebAPI {
   public openbank: Openbank;
   public status: Status;
   public auth: Auth;
+  public firmbank: Firmbank;
+  public firmbankpremium: FirmbankPremium;
 
   constructor(authProperties: AuthProperties) {
     const { clientId, clientSecret } = authProperties;

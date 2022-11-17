@@ -5,6 +5,7 @@ import {
   Firmbank,
   FirmbankPremium,
   Ocr,
+  Masking,
 } from './resources';
 
 interface AuthProperties {
@@ -28,6 +29,7 @@ const resources = {
   Firmbank,
   FirmbankPremium,
   Ocr,
+  Masking,
 } as const;
 
 export class UsebAPI {
@@ -41,6 +43,7 @@ export class UsebAPI {
   public firmbank: Firmbank;
   public firmbankpremium: FirmbankPremium;
   public ocr: Ocr;
+  public masking: Masking;
 
   constructor(authProperties: AuthProperties) {
     const { clientId, clientSecret } = authProperties;

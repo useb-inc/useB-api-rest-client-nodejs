@@ -43,7 +43,7 @@ export class Base {
       'Content-Type': 'application/json',
       'User-Agent': 'useb-api-nodejs',
     };
-    const accessToken = await this._apiClass.getToken();
+    const accessToken = await this._apiClass.requestToken();
     if (accessToken) {
       headers['Authorization'] = 'Bearer ' + accessToken.jwt;
     }

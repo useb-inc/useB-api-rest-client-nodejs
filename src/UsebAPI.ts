@@ -73,7 +73,7 @@ export class UsebAPI {
     this._token = token;
   }
 
-  public getToken(options: GetTokenOptions = {}): Promise<Token> {
+  public requestToken(options: GetTokenOptions = {}): Promise<Token> {
     const { forceRefresh } = options;
     const _this = this;
 

@@ -6,6 +6,7 @@ import {
   FirmbankPremium,
   Ocr,
   Masking,
+  Face,
 } from './resources';
 
 interface AuthProperties {
@@ -30,6 +31,7 @@ const resources = {
   FirmbankPremium,
   Ocr,
   Masking,
+  Face,
 } as const;
 
 export class UsebAPI {
@@ -44,6 +46,7 @@ export class UsebAPI {
   public firmbankpremium: FirmbankPremium;
   public ocr: Ocr;
   public masking: Masking;
+  public face: Face;
 
   constructor(authProperties: AuthProperties) {
     const { clientId, clientSecret } = authProperties;
@@ -70,7 +73,15 @@ export class UsebAPI {
     this._token = token;
   }
 
-  public getToken(options: GetTokenOptions = {}): Promise<Token> {
+  get clientId(): string {
+    return this._clientId;
+  }
+
+  get clientSecret(): string {
+    return this._clientSecret;
+  }
+
+  public requestToken(options: GetTokenOptions = {}): Promise<Token> {
     const { forceRefresh } = options;
     const _this = this;
 

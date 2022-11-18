@@ -11,7 +11,7 @@ import { UsebAPI } from '../UsebAPI';
 
 export class Base {
   protected _host: string;
-  constructor(private _apiClass: UsebAPI, private _axiosInstance) {
+  constructor(protected _apiClass: UsebAPI, private _axiosInstance) {
     this._axiosInstance = axios.create({
       baseURL: this._host,
     });
@@ -43,7 +43,7 @@ export class Base {
       'Content-Type': 'application/json',
       'User-Agent': 'useb-api-nodejs',
     };
-    const accessToken = await this._apiClass.getToken();
+    const accessToken = await this._apiClass.requestToken();
     if (accessToken) {
       headers['Authorization'] = 'Bearer ' + accessToken.jwt;
     }
@@ -67,7 +67,8 @@ export class Base {
       axiosConfig.data = params;
     }
 
-    if (/\/oauth\//.test(url)) {
+    // 토큰 키 발급은 별도 헤더 사용
+    if (/\/oauth\/token/.test(url)) {
       axiosConfig.headers = extraHeaders;
     } else {
       axiosConfig.headers = {

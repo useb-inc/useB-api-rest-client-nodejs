@@ -5,7 +5,7 @@ import axios, {
   AxiosResponse,
 } from 'axios';
 import * as _ from 'lodash';
-import HTTPMethod from '../constants';
+import HTTPMethod from '../HttpMethods';
 import { CallAPIMethodOptions, ErrorResponse, MethodSpec } from '../interfaces';
 import { UsebAPI } from '../UsebAPI';
 

@@ -1,4 +1,4 @@
-import HTTPMethod from '../constants';
+import HTTPMethod from '../HttpMethods';
 import { BaseResponse, DataResponse, None } from '../interfaces';
 import Base from './_Base';
 

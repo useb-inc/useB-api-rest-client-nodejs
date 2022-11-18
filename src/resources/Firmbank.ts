@@ -1,4 +1,5 @@
-import HTTPMethod from '../constants';
+import HTTPMethod from '../HttpMethods';
+import { BANKING_BASE_HOST } from '../constants';
 import { BaseResponse, DataResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -16,7 +17,7 @@ interface VerifyParams {
   print_content: string;
 }
 export class Firmbank extends Base {
-  protected _host = 'https://openapi.useb.co.kr';
+  protected _host = BANKING_BASE_HOST;
 
   /**
    * [펌뱅킹] 1원입금이체

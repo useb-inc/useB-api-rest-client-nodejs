@@ -1,4 +1,5 @@
-import HTTPMethod from '../constants';
+import HTTPMethod from '../HttpMethods';
+import { AUTH_BASE_HOST } from '../constants';
 import { BaseResponse, DataResponse, None } from '../interfaces';
 import Base from './_Base';
 
@@ -16,7 +17,7 @@ interface TokenResponse extends BaseResponse {
 }
 
 export class Auth extends Base {
-  protected _host = 'https://auth.useb.co.kr';
+  protected _host = AUTH_BASE_HOST;
 
   getClientSecret = this.callAPIMethod<
     GetClientSecretParams,

@@ -1,5 +1,5 @@
 import { AxiosRequestHeaders, AxiosResponse } from 'axios';
-import HTTPMethod from './constants';
+import HTTPMethod from './HttpMethods';
 
 export interface MethodSpec {
   method?: HTTPMethod;

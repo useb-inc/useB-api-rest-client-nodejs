@@ -1,4 +1,5 @@
-import HTTPMethod from '../constants';
+import HTTPMethod from '../HttpMethods';
+import { AUTH_BASE_HOST } from '../constants';
 import { DataResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -47,7 +48,7 @@ interface DecryptResponseData {
   plaintext: string;
 }
 export class Keys extends Base {
-  protected _host = 'https://auth.useb.co.kr';
+  protected _host = AUTH_BASE_HOST;
 
   /**
    * RSA2048 공개키 비밀키 생성

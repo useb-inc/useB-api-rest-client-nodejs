@@ -5,3 +5,4 @@ export { Firmbank } from './Firmbank';
 export { FirmbankPremium } from './FirmbankPremium';
 export { Ocr } from './Ocr';
 export { Masking } from './Masking';
+export { Face } from './Face';

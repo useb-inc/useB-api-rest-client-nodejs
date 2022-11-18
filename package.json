@@ -46,5 +46,10 @@
   },
   "volta": {
     "node": "16.17.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/useb-inc/useB-api-rest-client-nodejs"
+  },
+  "homepage": "https://doc.useb.co.kr"
 }

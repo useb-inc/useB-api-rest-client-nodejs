@@ -1,4 +1,5 @@
 import HTTPMethod from '../HttpMethods';
+import { API_BASE_HOST } from '../constants';
 import { BaseResponse, DataResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -44,7 +45,7 @@ interface BusinessRegistrationResponseData {
   tax_type_change_date?: string;
 }
 export class Status extends Base {
-  protected _host = 'https://api3.useb.co.kr';
+  protected _host = API_BASE_HOST;
 
   /**
    * 주민등록증 진위확인

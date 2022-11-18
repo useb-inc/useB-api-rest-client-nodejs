@@ -1,4 +1,5 @@
 import HTTPMethod from '../HttpMethods';
+import { API_BASE_HOST } from '../constants';
 import { BaseResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -12,7 +13,7 @@ interface VerifyResponse extends BaseResponse {
   confidence: number;
 }
 export class Face extends Base {
-  protected _host = 'https://api3.useb.co.kr';
+  protected _host = API_BASE_HOST;
 
   /**
    * 안면일치여부 확인

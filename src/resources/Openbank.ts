@@ -1,4 +1,5 @@
 import HTTPMethod from '../HttpMethods';
+import { BANKING_BASE_HOST } from '../constants';
 import { BaseResponse, DataResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -34,7 +35,7 @@ interface VerifyResponseData {
   print_content: string;
 }
 export class Openbank extends Base {
-  protected _host = 'https://openapi.useb.co.kr';
+  protected _host = BANKING_BASE_HOST;
 
   /**
    * [오픈뱅킹] 계좌실명조회

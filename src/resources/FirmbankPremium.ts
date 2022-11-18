@@ -1,4 +1,5 @@
 import HTTPMethod from '../HttpMethods';
+import { BANKING_BASE_HOST } from '../constants';
 import { BaseResponse, DataResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -29,7 +30,7 @@ interface VerifyParams {
 }
 
 export class FirmbankPremium extends Base {
-  protected _host = 'https://openapi.useb.co.kr';
+  protected _host = BANKING_BASE_HOST;
 
   /**
    * [펌뱅킹 프리미엄] 계좌실명조회

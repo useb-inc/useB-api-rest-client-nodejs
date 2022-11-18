@@ -1,4 +1,5 @@
 import HTTPMethod from '../HttpMethods';
+import { API_BASE_HOST } from '../constants';
 import { DataResponse } from '../interfaces';
 import Base from './_Base';
 
@@ -84,7 +85,7 @@ interface BusinessRegistrationResponseData {
 }
 
 export class Ocr extends Base {
-  protected _host = 'https://api3.useb.co.kr';
+  protected _host = API_BASE_HOST;
 
   /**
    * 주민등록증 OCR

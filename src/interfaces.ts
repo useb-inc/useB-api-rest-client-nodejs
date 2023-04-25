@@ -6,6 +6,7 @@ export interface MethodSpec {
   path: string;
   urlParam?: string | null;
   requiredParams?: string[] | null;
+  deprecated?: boolean;
 }
 export interface CallAPIMethodOptions<P> {
   param?: P;

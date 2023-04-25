@@ -102,7 +102,12 @@ export class Base {
   protected callAPIMethod<P extends object, R = Record<string, unknown>>(
     spec: MethodSpec,
   ): (options?: CallAPIMethodOptions<P>) => Promise<R> {
-    const { path, method, urlParam, requiredParams } = spec;
+    const { path, method, urlParam, requiredParams, deprecated } = spec;
+    if (deprecated) {
+      console.warn(
+        `[DEPRECATED] ${method} ${path} 는(은) Deprecated 되었습니다.`,
+      );
+    }
     const _this = this;
 
     return function (options?: CallAPIMethodOptions<P>) {

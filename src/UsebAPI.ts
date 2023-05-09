@@ -1,3 +1,4 @@
+import { ONE_MINUTE } from './constants';
 import {
   Auth,
   Openbank,
@@ -19,8 +20,13 @@ interface Token {
   expires_in: number;
 }
 
+/**
+ * @param {boolean} forceRefresh 토큰 강제 갱신 여부
+ * @param {number} tokenLeadTime 토큰 만료시간 이전에 토큰을 갱신할 시간 (단위: ms) - 기본값: 5분
+ */
 interface GetTokenOptions {
   forceRefresh?: boolean;
+  tokenLeadTime?: number; // 토큰 만료시간 이전에 토큰을 갱신할 시간 (단위: ms)
 }
 
 const resources = {
@@ -38,6 +44,7 @@ export class UsebAPI {
   private _clientId: string;
   private _clientSecret: string;
   private _token: Token | null = null;
+  private _tokenLeadTime = 5 * ONE_MINUTE; // 5분
 
   public openbank: Openbank;
   public status: Status;
@@ -65,7 +72,7 @@ export class UsebAPI {
   }
   get token(): Token | null {
     // 토큰 만료시간이 지났으면 null을 반환
-    if (new Date(this._token?.expires_in).getTime() <= Date.now()) return null;
+    if (new Date(this._token?.expires_in).getTime() <= (Date.now() + this._tokenLeadTime)) return null;
     return this._token;
   }
 
@@ -81,8 +88,16 @@ export class UsebAPI {
     return this._clientSecret;
   }
 
+  /**
+   * @description
+   * 토큰 발급 함수
+   * @param {boolean} options.forceRefresh 토큰 강제 갱신 여부
+   * @param {number} options.tokenLeadTime 토큰 만료시간 이전에 토큰을 갱신할 시간 (단위: ms) - 기본값: 5분
+   * @returns {Promise<Token>}
+   */
   public requestToken(options: GetTokenOptions = {}): Promise<Token> {
-    const { forceRefresh } = options;
+    const { forceRefresh, tokenLeadTime } = options;
+    this._tokenLeadTime = tokenLeadTime || this._tokenLeadTime;
     const _this = this;
 
     return new Promise<Token>(function (resolve, reject) {
